@@ -273,9 +273,16 @@ function nextDialog() {
   if (currentDialogIndex >= dialogQueue.length) {
     document.getElementById("dialogue-box").style.display = "none";
     state = "PLAY";
-    if (window.innerWidth < 800) {
+
+    // PERBAIKAN: Deteksi HP berdasarkan sentuhan layar atau resolusi tablet
+    if (
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.innerWidth <= 1024
+    ) {
       document.getElementById("vctrl").style.display = "flex";
     }
+
     if (onDialogComplete) onDialogComplete();
   } else {
     showDialog();
@@ -368,7 +375,13 @@ function startGame() {
   cam.y = p.y - WH / 2;
 
   document.getElementById("hud").classList.add("active");
-  if (window.innerWidth < 800) {
+
+  // PERBAIKAN: Deteksi HP berdasarkan sentuhan layar atau resolusi tablet
+  if (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    window.innerWidth <= 1024
+  ) {
     document.getElementById("vctrl").style.display = "flex";
   }
 
