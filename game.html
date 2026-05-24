@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>MISI RADIX: Jelajah Bilangan</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="game-wrapper"><canvas id="gameCanvas"></canvas></div>
+
+    <div id="hud">
+      <div class="hud-box">
+        <span style="color: #aaa">HP:</span>
+        <span class="gold-text" id="t-hp">100</span> /
+        <span id="t-maxhp">100</span>
+        <div class="bar-bg">
+          <div class="bar-fill bar-hp" id="b-hp" style="width: 100%"></div>
+        </div>
+        <div style="margin-top: 10px">
+          <span style="color: #aaa">XP:</span>
+          <span class="gold-text" id="t-xp">0</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill bar-xp" id="b-xp" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="hud-box" style="text-align: right">
+        Area: <span class="gold-text" id="t-area">1/4</span><br /><br />
+        Peti Terbuka: <span class="gold-text" id="t-peti">0/6</span>
+      </div>
+    </div>
+
+    <div id="vctrl">
+      <div class="joy-base" id="joy-base">
+        <div class="joy-stick" id="joy-stick"></div>
+      </div>
+      <div class="action-btns">
+        <div class="btn btn-s3" id="btn-s3">
+          S3<br />(L)
+          <div class="cd-overlay" id="cd-s3"></div>
+        </div>
+        <div class="btn btn-s2" id="btn-s2">
+          S2<br />(K)
+          <div class="cd-overlay" id="cd-s2"></div>
+        </div>
+        <div class="btn btn-s1" id="btn-s1">
+          S1<br />(J)
+          <div class="cd-overlay" id="cd-s1"></div>
+        </div>
+        <div class="btn btn-atk" id="btn-atk">
+          SERANG<br />(Spasi)
+          <div class="cd-overlay" id="cd-atk"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-screen active" id="m-main">
+      <div class="title">MISI RADIX</div>
+      <div class="subtitle">Jelajah 4 Dunia Bilangan</div>
+      <input
+        type="text"
+        id="player-name-input"
+        placeholder="Ketik Nama Samurai..."
+        maxlength="12"
+        autocomplete="off"
+      />
+      <button class="ui-btn" onclick="initGame()">Mulai Permainan</button>
+    </div>
+
+    <div class="menu-screen" id="m-go">
+      <div class="title" style="color: var(--c-red); text-shadow: 0 0 20px red">
+        GUGUR
+      </div>
+      <div style="margin-bottom: 30px; line-height: 2">
+        Area Terakhir: <span id="go-lvl" class="gold-text"></span><br /><br />
+        <span style="color: var(--c-green)"
+          >Soal Benar: <span id="go-benar"></span></span
+        ><br />
+        <span style="color: var(--c-red)"
+          >Soal Salah: <span id="go-salah"></span
+        ></span>
+      </div>
+      <button class="ui-btn" onclick="startGame()">Coba Lagi</button>
+    </div>
+
+    <div class="menu-screen" id="m-win">
+      <div
+        class="title"
+        style="color: var(--c-green); text-shadow: 0 0 20px var(--c-green)"
+      >
+        MENANG!
+      </div>
+      <div style="margin-bottom: 30px; line-height: 2; font-size: 12px">
+        Kamu telah menaklukkan ke-4 Area!<br /><br />
+        <span style="color: var(--c-green)"
+          >Total Benar: <span id="win-benar"></span></span
+        ><br />
+        <span style="color: var(--c-red)"
+          >Total Salah: <span id="win-salah"></span
+        ></span>
+      </div>
+      <button class="ui-btn" onclick="showMenu('m-main')">Menu Utama</button>
+    </div>
+
+    <div class="menu-screen" id="m-quiz">
+      <div id="quiz-box">
+        <div id="quiz-title">Tantangan Pengetahuan!</div>
+        <div id="quiz-question" id="q-text">Loading...</div>
+        <div class="pg-grid" id="q-options"></div>
+        <div id="quiz-explanation">
+          <span id="q-result-text"></span>
+          <div id="q-exp-text"></div>
+          <button
+            class="ui-btn"
+            style="width: 100%; margin-top: 15px"
+            onclick="tutupPenjelasan()"
+          >
+            Lanjutkan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="dialogue-box">
+      <div id="dialogue-speaker">Speaker</div>
+      <div id="dialogue-text">Text...</div>
+      <div id="dialogue-prompt">Ketuk atau Spasi untuk lanjut &#9658;</div>
+    </div>
+
+    <div id="notif-area" class="notif"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

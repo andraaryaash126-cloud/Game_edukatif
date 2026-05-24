@@ -1,0 +1,418 @@
+:root {
+  --c-bg: #06080f;
+  --c-gold: #ffd700;
+  --c-blue: #4a9eff;
+  --c-green: #40e080;
+  --c-red: #ff4444;
+  --c-text: #e8f0ff;
+  --font-px: "Press Start 2P", monospace;
+}
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: var(--c-bg);
+  overflow: hidden;
+  font-family: var(--font-px);
+  color: var(--c-text);
+  touch-action: none;
+  user-select: none;
+}
+#game-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+}
+
+/* HUD */
+#hud {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: none;
+  justify-content: space-between;
+  z-index: 60;
+  pointer-events: none;
+}
+#hud.active {
+  display: flex;
+}
+.hud-box {
+  background: rgba(10, 15, 30, 0.85);
+  border: 2px solid var(--c-blue);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1.8;
+  box-shadow: 0 0 15px rgba(74, 158, 255, 0.3);
+}
+.bar-bg {
+  width: 120px;
+  height: 12px;
+  background: #111;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 5px;
+  border: 1px solid #333;
+}
+.bar-fill {
+  height: 100%;
+  transition: width 0.2s ease;
+}
+.bar-hp {
+  background: linear-gradient(90deg, #aa0000, var(--c-red));
+}
+.bar-xp {
+  background: linear-gradient(90deg, #008822, var(--c-green));
+}
+.gold-text {
+  color: var(--c-gold);
+}
+
+/* Kontrol Virtual */
+#vctrl {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: none;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 70;
+}
+.joy-base {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border: 2px solid rgba(74, 158, 255, 0.3);
+}
+.joy-stick {
+  position: absolute;
+  top: 35px;
+  left: 35px;
+  width: 50px;
+  height: 50px;
+  background: rgba(74, 158, 255, 0.6);
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+.action-btns {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  grid-template-rows: repeat(2, 50px);
+  gap: 10px;
+  align-items: end;
+  justify-items: center;
+}
+.btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: bold;
+  color: #fff;
+  font-family: var(--font-px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.btn:active {
+  transform: scale(0.9);
+  filter: brightness(1.5);
+}
+.cd-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  height: 0%;
+  transition: height 0.1s linear;
+  pointer-events: none;
+}
+
+.btn-atk {
+  background: rgba(200, 40, 40, 0.7);
+  border-color: var(--c-red);
+  grid-column: 2 / 4;
+  grid-row: 1 / 3;
+  width: 80px;
+  height: 80px;
+  font-size: 10px;
+  align-self: end;
+  justify-self: end;
+}
+.btn-s1 {
+  background: rgba(200, 100, 40, 0.7);
+  border-color: #ff8800;
+  grid-column: 1;
+  grid-row: 2;
+}
+.btn-s2 {
+  background: rgba(40, 200, 80, 0.7);
+  border-color: var(--c-green);
+  grid-column: 2;
+  grid-row: 1;
+}
+.btn-s3 {
+  background: rgba(150, 40, 200, 0.7);
+  border-color: var(--c-purple);
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* Menu Utama & Modal */
+.menu-screen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #0a1020, #000);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  text-align: center;
+}
+.menu-screen.active {
+  display: flex;
+}
+.title {
+  font-size: clamp(20px, 4vw, 40px);
+  color: var(--c-gold);
+  text-shadow: 0 0 20px #ffaa00;
+  margin-bottom: 10px;
+  animation: pulse 2s infinite;
+  line-height: 1.5;
+}
+.subtitle {
+  font-size: 12px;
+  color: var(--c-blue);
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+.ui-btn {
+  background: #112244;
+  color: #fff;
+  font-family: var(--font-px);
+  font-size: 12px;
+  padding: 15px 20px;
+  border: 2px solid var(--c-blue);
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(74, 158, 255, 0.4);
+  transition: all 0.2s;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+.ui-btn:hover {
+  background: var(--c-blue);
+  color: #000;
+  box-shadow: 0 0 30px var(--c-blue);
+}
+
+/* Input Nama */
+#player-name-input {
+  background: #08101e;
+  border: 2px solid var(--c-blue-dim);
+  border-radius: 5px;
+  color: #fff;
+  font-family: var(--font-px);
+  font-size: 12px;
+  padding: 15px;
+  width: 300px;
+  max-width: 90%;
+  text-align: center;
+  outline: none;
+  margin-bottom: 30px;
+  transition: 0.2s;
+}
+#player-name-input:focus {
+  border-color: var(--c-blue);
+  box-shadow: 0 0 15px rgba(74, 158, 255, 0.4);
+}
+
+/* Overlay Soal Pilihan Ganda */
+#quiz-box {
+  background: #0a0f1e;
+  border: 3px solid var(--c-gold);
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 95%;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+#quiz-title {
+  color: var(--c-gold);
+  font-size: 14px;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+#quiz-question {
+  background: #000;
+  padding: 15px;
+  font-size: 12px;
+  color: #fff;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #333;
+  line-height: 1.8;
+}
+.pg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.pg-btn {
+  background: #111;
+  border: 2px solid var(--c-blue-dim);
+  color: #fff;
+  font-family: var(--font-px);
+  font-size: 12px;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  line-height: 1.5;
+}
+.pg-btn:hover {
+  border-color: var(--c-blue);
+  background: #1a2a4a;
+}
+
+#quiz-explanation {
+  display: none;
+  background: #001100;
+  border: 2px solid var(--c-green);
+  padding: 15px;
+  font-size: 11px;
+  color: #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  line-height: 1.8;
+  text-align: left;
+}
+.text-benar {
+  color: var(--c-green);
+  text-shadow: 0 0 10px var(--c-green);
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+}
+.text-salah {
+  color: var(--c-red);
+  text-shadow: 0 0 10px var(--c-red);
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.notif {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  border: 1px solid var(--c-gold);
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 90;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* RPG DIALOGUE BOX */
+#dialogue-box {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
+  background: rgba(10, 15, 30, 0.95);
+  border: 2px solid var(--c-gold);
+  border-radius: 10px;
+  padding: 20px;
+  z-index: 150;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+#dialogue-speaker {
+  color: var(--c-gold);
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+#dialogue-text {
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.8;
+  min-height: 40px;
+}
+#dialogue-prompt {
+  text-align: right;
+  font-size: 8px;
+  color: #aaa;
+  margin-top: 15px;
+  animation: pulse 1.5s infinite;
+}
