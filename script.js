@@ -13,6 +13,22 @@ window.addEventListener("resize", () => {
 });
 window.dispatchEvent(new Event("resize"));
 
+// Fungsi Memaksa Fullscreen dan Lock Landscape di Android
+function bukaLayarPenuh() {
+  let doc = document.documentElement;
+  if (doc.requestFullscreen) {
+    doc.requestFullscreen().catch((err) => console.log(err));
+  } else if (doc.webkitRequestFullscreen) {
+    /* Safari */
+    doc.webkitRequestFullscreen();
+  }
+
+  // Mengunci orientasi ke landscape
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("landscape").catch((err) => console.log(err));
+  }
+}
+
 // 4 THEMES
 const THEMES = [
   {}, // index 0 unused
@@ -80,8 +96,9 @@ window.addEventListener("keydown", (e) => {
       "KeyK",
       "KeyL",
     ].includes(e.code)
-  )
+  ) {
     e.preventDefault();
+  }
 
   if (state === "DIALOGUE" && e.code === "Space") {
     nextDialog();
@@ -95,6 +112,7 @@ window.addEventListener("keydown", (e) => {
     if (e.code === "KeyL") doSkill3();
   }
 });
+
 window.addEventListener("keyup", (e) => {
   if (e.target.tagName === "INPUT") return;
   keys[e.code] = false;
@@ -104,6 +122,7 @@ window.addEventListener("keyup", (e) => {
 let joy = { x: 0, y: 0, active: false, origin: { x: 0, y: 0 } };
 const jBase = document.getElementById("joy-base");
 const jStick = document.getElementById("joy-stick");
+
 if (jBase) {
   jBase.addEventListener(
     "touchstart",
@@ -119,6 +138,7 @@ if (jBase) {
     },
     { passive: false },
   );
+
   jBase.addEventListener(
     "touchmove",
     (e) => {
@@ -127,6 +147,7 @@ if (jBase) {
     },
     { passive: false },
   );
+
   jBase.addEventListener(
     "touchend",
     (e) => {
@@ -139,15 +160,18 @@ if (jBase) {
     { passive: false },
   );
 }
+
 function updateJoy(touch) {
-  let dx = touch.clientX - joy.origin.x,
-    dy = touch.clientY - joy.origin.y;
-  let dist = Math.sqrt(dx * dx + dy * dy),
-    max = 35;
+  let dx = touch.clientX - joy.origin.x;
+  let dy = touch.clientY - joy.origin.y;
+  let dist = Math.sqrt(dx * dx + dy * dy);
+  let max = 35;
+
   if (dist > max) {
     dx = (dx / dist) * max;
     dy = (dy / dist) * max;
   }
+
   jStick.style.transform = `translate(${dx}px, ${dy}px)`;
   joy.x = dx / max;
   joy.y = dy / max;
@@ -170,6 +194,7 @@ const setupBtn = (id, action) => {
     });
   }
 };
+
 setupBtn("btn-atk", doAttack);
 setupBtn("btn-s1", doSkill1);
 setupBtn("btn-s2", doSkill2);
@@ -180,6 +205,7 @@ dBox.addEventListener("mousedown", (e) => {
   e.preventDefault();
   nextDialog();
 });
+
 dBox.addEventListener(
   "touchstart",
   (e) => {
@@ -216,6 +242,7 @@ const p = {
   s3Max: 5,
   isDashing: false,
 };
+
 const cam = { x: 0, y: 0 };
 
 function showNotif(text) {
@@ -246,15 +273,15 @@ function nextDialog() {
   if (currentDialogIndex >= dialogQueue.length) {
     document.getElementById("dialogue-box").style.display = "none";
     state = "PLAY";
-    if (window.innerWidth < 800)
+    if (window.innerWidth < 800) {
       document.getElementById("vctrl").style.display = "flex";
+    }
     if (onDialogComplete) onDialogComplete();
   } else {
     showDialog();
   }
 }
 
-// Hanya dipanggil saat memulai game baru dari awal (Mulai Permainan)
 function resetStats() {
   Object.assign(p, {
     x: TILE * 2.5,
@@ -277,6 +304,8 @@ function resetStats() {
 }
 
 function initGame() {
+  bukaLayarPenuh();
+
   let inputName = document
     .getElementById("player-name-input")
     .value.trim()
@@ -316,13 +345,15 @@ function initGame() {
   startDialog(prologue, () => {});
 }
 
-// Dipanggil saat tombol "Coba Lagi" ditekan setelah Game Over
+// Checkpoint saat Gugur (Mulai dari Area terakhir)
 function startGame() {
+  bukaLayarPenuh();
+
   document
     .querySelectorAll(".menu-screen")
     .forEach((el) => el.classList.remove("active"));
 
-  // Memulihkan pemain di area yang sama (tanpa mereset Level, Max HP, dll)
+  // Mengembalikan HP dan Posisi (Tanpa reset level/xp/area)
   p.hp = p.maxHp;
   p.x = TILE * 2.5;
   p.y = TILE * 2.5;
@@ -332,13 +363,15 @@ function startGame() {
   p.cdS3 = 0;
   p.isDashing = false;
 
-  // Generate ulang musuh dan peti untuk map saat ini
   generateMap(p.area);
   cam.x = p.x - WW / 2;
   cam.y = p.y - WH / 2;
+
   document.getElementById("hud").classList.add("active");
-  if (window.innerWidth < 800)
+  if (window.innerWidth < 800) {
     document.getElementById("vctrl").style.display = "flex";
+  }
+
   state = "PLAY";
   lastTime = performance.now();
 }
@@ -352,7 +385,11 @@ function generateMap(lvl) {
 
   map = [];
   for (let y = 0; y < MH; y++) map.push(new Array(MW).fill(1));
-  for (let y = 1; y <= 5; y++) for (let x = 1; x <= 5; x++) map[y][x] = 0;
+  for (let y = 1; y <= 5; y++) {
+    for (let x = 1; x <= 5; x++) {
+      map[y][x] = 0;
+    }
+  }
 
   for (let x = 1; x < MW - 1; x++) map[3][x] = 0;
   for (let y = 1; y < MH - 1; y++) map[y][3] = 0;
@@ -361,18 +398,22 @@ function generateMap(lvl) {
     let r = 3 + Math.floor(Math.random() * (MH - 6));
     for (let x = 2; x < MW - 2; x++) map[r][x] = 0;
   }
+
   for (let i = 0; i < 15; i++) {
     let c = 3 + Math.floor(Math.random() * (MW - 6));
     for (let y = 2; y < MH - 2; y++) map[y][c] = 0;
   }
 
   for (let i = 0; i < 35; i++) {
-    let rw = 4 + Math.floor(Math.random() * 6),
-      rh = 4 + Math.floor(Math.random() * 6);
-    let rx = 2 + Math.floor(Math.random() * (MW - rw - 4)),
-      ry = 2 + Math.floor(Math.random() * (MH - rh - 4));
-    for (let y = ry; y < ry + rh; y++)
-      for (let x = rx; x < rx + rw; x++) map[y][x] = 0;
+    let rw = 4 + Math.floor(Math.random() * 6);
+    let rh = 4 + Math.floor(Math.random() * 6);
+    let rx = 2 + Math.floor(Math.random() * (MW - rw - 4));
+    let ry = 2 + Math.floor(Math.random() * (MH - rh - 4));
+    for (let y = ry; y < ry + rh; y++) {
+      for (let x = rx; x < rx + rw; x++) {
+        map[y][x] = 0;
+      }
+    }
   }
 
   for (let y = MH - 7; y < MH - 1; y++) {
@@ -388,6 +429,7 @@ function generateMap(lvl) {
       if (map[y][x] === 0) lantaiAman.push({ x: x, y: y });
     }
   }
+
   lantaiAman.sort(() => Math.random() - 0.5);
 
   for (let i = 0; i < 30; i++) {
@@ -404,6 +446,7 @@ function generateMap(lvl) {
       let eradius = 14;
       let ehp = 40;
       let espd = 70;
+
       if (lvl === 1) {
         eradius = 16;
         ehp = 30;
@@ -450,21 +493,25 @@ function generateMap(lvl) {
       });
     }
   }
+
   updateHUD();
 }
 
 function spawnBoss() {
   let bossNames = ["", "RAJA SLIME", "RAJA GOBLIN", "RAJA OGRE", "HEXATOR"];
+
   let bossName = bossNames[p.area];
   let bossText = "";
-  if (p.area === 1)
+
+  if (p.area === 1) {
     bossText = `Beraninya kau masuk ke Hutan Biner! Akan kutelan kau bulat-bulat, ${p.name}!`;
-  else if (p.area === 2)
+  } else if (p.area === 2) {
     bossText = "Gua Es Oktal ini akan menjadi kuburan bekumu. Matilah!";
-  else if (p.area === 3)
+  } else if (p.area === 3) {
     bossText = "RAAAWRR! Gurun Desimal takkan melepaskanmu hidup-hidup!";
-  else if (p.area === 4)
+  } else if (p.area === 4) {
     bossText = `Hahaha! Samurai bodoh ${p.name}! Sihir Heksadesimal adalah yang tertinggi! Kau akan bertekuk lutut!`;
+  }
 
   let bossDialog = [
     { speaker: bossName, text: bossText },
@@ -478,6 +525,7 @@ function spawnBoss() {
     let bx = (MW - 4) * TILE + TILE / 2;
     let by = (MH - 4) * TILE + TILE / 2;
     let bHp = 500 * p.area;
+
     ents.push({
       type: "ENEMY",
       x: bx,
@@ -493,9 +541,7 @@ function spawnBoss() {
     });
 
     for (let i = 0; i < 60; i++) spawnParticles(bx, by, "#ff0000", 1);
-    showNotif(
-      `⚠ ${bossName} TELAH MUNCUL! CARI DIA MENGGUNAKAN PANAH MERAH! ⚠`,
-    );
+    showNotif(`⚠ ${bossName} TELAH MUNCUL! IKUTI ARAH PANAH MERAH! ⚠`);
   });
 }
 
@@ -574,17 +620,21 @@ function genSoal(lvl) {
   let options = [jwb];
   while (options.length < 4) {
     let wrong = "";
-    if (tipe.endsWith("b"))
+    if (tipe.endsWith("b")) {
       wrong = (n + Math.floor(Math.random() * 10 - 5)).toString(2);
-    else if (tipe.endsWith("o"))
+    } else if (tipe.endsWith("o")) {
       wrong = (n + Math.floor(Math.random() * 10 - 5)).toString(8);
-    else if (tipe.endsWith("h"))
+    } else if (tipe.endsWith("h")) {
       wrong = (n + Math.floor(Math.random() * 10 - 5))
         .toString(16)
         .toUpperCase();
-    else wrong = (n + Math.floor(Math.random() * 10 - 5)).toString(10);
+    } else {
+      wrong = (n + Math.floor(Math.random() * 10 - 5)).toString(10);
+    }
 
-    if (!options.includes(wrong) && !wrong.includes("-")) options.push(wrong);
+    if (!options.includes(wrong) && !wrong.includes("-")) {
+      options.push(wrong);
+    }
   }
   options.sort(() => Math.random() - 0.5);
 
@@ -593,24 +643,28 @@ function genSoal(lvl) {
 
 let quizTarget = null,
   currentQuiz = null;
+
 function cekPeti() {
   for (let e of ents) {
     if (e.type === "CHEST" && !e.open) {
-      let dx = e.x - p.x,
-        dy = e.y - p.y;
+      let dx = e.x - p.x;
+      let dy = e.y - p.y;
+
       if (Math.sqrt(dx * dx + dy * dy) < 60) {
         state = "QUIZ";
         quizTarget = e;
         currentQuiz = genSoal(p.area);
+
         document.getElementById("quiz-question").innerHTML = currentQuiz.q;
 
         let optsHTML = "";
         let labels = ["A", "B", "C", "D"];
+
         currentQuiz.opts.forEach((opt, i) => {
           optsHTML += `<button class="pg-btn" onclick="pilihJawaban('${opt}')">${labels[i]}. ${opt}</button>`;
         });
-        document.getElementById("q-options").innerHTML = optsHTML;
 
+        document.getElementById("q-options").innerHTML = optsHTML;
         document.getElementById("q-options").style.display = "grid";
         document.getElementById("quiz-explanation").style.display = "none";
         document.getElementById("m-quiz").classList.add("active");
@@ -632,14 +686,18 @@ function pilihJawaban(jwb) {
     chestsOpened++;
     skorBenar++;
     totalSoalTerjawab++;
+
     spawnParticles(quizTarget.x, quizTarget.y, "#ffd700", 30);
     spawnText(quizTarget.x, quizTarget.y, "Terbuka!", "#ffd700");
     cekLevelUp();
+
+    // PEMANGGILAN BOS DIHAPUS DARI SINI AGAR TIDAK BENTROK UI
   } else {
     resText.innerHTML = `<span class="text-salah">✘ SALAH! Jawaban yang benar adalah: ${currentQuiz.a}</span>`;
     p.hp -= 20;
     skorSalah++;
     totalSoalTerjawab++;
+
     spawnText(p.x, p.y, "-20 HP", "#ff4444");
     if (p.hp <= 0) setTimeout(gameOver, 100);
   }
@@ -649,11 +707,12 @@ function pilihJawaban(jwb) {
   updateHUD();
 }
 
+// BOS BARU DIPANGGIL SAAT LAYAR KUIS DITUTUP
 function tutupPenjelasan() {
   document.getElementById("m-quiz").classList.remove("active");
 
   if (chestsOpened === 6) {
-    chestsOpened++;
+    chestsOpened++; // Naikkan jadi 7 agar bos tidak muncul dobel
     spawnBoss();
   } else {
     state = "PLAY";
@@ -664,15 +723,19 @@ function doAttack() {
   if (p.cdAtk > 0) return;
   p.cdAtk = p.atkMax;
   cekPeti();
-  let ax = p.x + p.dirX * 40,
-    ay = p.y + p.dirY * 40;
+
+  let ax = p.x + p.dirX * 40;
+  let ay = p.y + p.dirY * 40;
+
   spawnParticles(ax, ay, "#e8f0ff", 10);
 
   for (let e of ents) {
     if (e.type === "ENEMY" && !e.dead) {
-      let dx = e.x - ax,
-        dy = e.y - ay;
-      if (Math.sqrt(dx * dx + dy * dy) < 55) hitEnemy(e, 35);
+      let dx = e.x - ax;
+      let dy = e.y - ay;
+      if (Math.sqrt(dx * dx + dy * dy) < 55) {
+        hitEnemy(e, 35);
+      }
     }
   }
 }
@@ -681,14 +744,17 @@ function doSkill1() {
   if (p.cdS1 > 0) return;
   p.cdS1 = p.s1Max;
   p.isDashing = true;
+
   setTimeout(() => (p.isDashing = false), 300);
   spawnParticles(p.x, p.y, "#ffaa00", 30);
 
   for (let e of ents) {
     if (e.type === "ENEMY" && !e.dead) {
-      let dx = e.x - p.x,
-        dy = e.y - p.y;
-      if (Math.sqrt(dx * dx + dy * dy) < 80) hitEnemy(e, 50);
+      let dx = e.x - p.x;
+      let dy = e.y - p.y;
+      if (Math.sqrt(dx * dx + dy * dy) < 80) {
+        hitEnemy(e, 50);
+      }
     }
   }
 }
@@ -697,6 +763,7 @@ function doSkill2() {
   if (p.cdS2 > 0) return;
   p.cdS2 = p.s2Max;
   p.hp = Math.min(p.maxHp, p.hp + 60);
+
   spawnParticles(p.x, p.y, "#40e080", 25);
   spawnText(p.x, p.y - 20, "+60 Heal", "#40e080");
   updateHUD();
@@ -705,8 +772,10 @@ function doSkill2() {
 function doSkill3() {
   if (p.cdS3 > 0) return;
   p.cdS3 = p.s3Max;
+
   let vx = p.dirX * 400;
   let vy = p.dirY * 400;
+
   if (vx === 0 && vy === 0) {
     vx = p.lastDirX * 400;
     vy = 0;
@@ -720,13 +789,16 @@ function doSkill3() {
     life: 1.5,
     rad: 20,
   });
+
   spawnText(p.x, p.y - 20, "WAVE!", "#9966ff");
 }
 
 function hitEnemy(e, dmg) {
   if (e.dead) return;
+
   e.hp -= dmg;
   e.hitT = 0.2;
+
   spawnText(e.x, e.y - 20, dmg, "#ffaa00");
   spawnParticles(e.x, e.y, "#ff4444", 10);
 
@@ -735,6 +807,7 @@ function hitEnemy(e, dmg) {
     p.xp += e.isBoss ? 300 : 40;
     p.maxHp += 1;
     p.hp = Math.min(p.maxHp, p.hp + 5);
+
     cekLevelUp();
     spawnText(e.x, e.y, "+XP", "#40e080");
 
@@ -756,6 +829,7 @@ function cekLevelUp() {
     p.maxXp = Math.floor(p.maxXp * 1.5);
     p.maxHp += 20;
     p.hp = p.maxHp;
+
     spawnText(p.x, p.y - 40, "LEVEL UP!", "#ffd700");
     spawnParticles(p.x, p.y, "#00ffaa", 40);
   }
@@ -763,11 +837,13 @@ function cekLevelUp() {
 }
 
 function isSolid(x, y) {
-  let tx = Math.floor(x / TILE),
-    ty = Math.floor(y / TILE);
+  let tx = Math.floor(x / TILE);
+  let ty = Math.floor(y / TILE);
+
   if (tx < 0 || tx >= MW || ty < 0 || ty >= MH) return true;
   return map[ty][tx] === 1 || map[ty][tx] === 3;
 }
+
 function moveObj(obj, dx, dy) {
   if (dx !== 0) {
     if (!isSolid(obj.x + dx + Math.sign(dx) * obj.rad, obj.y)) obj.x += dx;
@@ -778,14 +854,17 @@ function moveObj(obj, dx, dy) {
 }
 
 let lastTime = performance.now();
+
 function loop(ts) {
   let dt = (ts - lastTime) / 1000;
   lastTime = ts;
+
   if (dt > 0.1) dt = 0.1;
 
   if (state === "PLAY") {
     updateGame(dt);
   }
+
   if (state === "PLAY" || state === "DIALOGUE") {
     drawGame();
   }
@@ -797,22 +876,27 @@ function updateGame(dt) {
   if (p.cdAtk > 0) p.cdAtk -= dt;
   document.getElementById("cd-atk").style.height =
     (p.cdAtk / p.atkMax) * 100 + "%";
+
   if (p.cdS1 > 0) p.cdS1 -= dt;
   document.getElementById("cd-s1").style.height =
     (p.cdS1 / p.s1Max) * 100 + "%";
+
   if (p.cdS2 > 0) p.cdS2 -= dt;
   document.getElementById("cd-s2").style.height =
     (p.cdS2 / p.s2Max) * 100 + "%";
+
   if (p.cdS3 > 0) p.cdS3 -= dt;
   document.getElementById("cd-s3").style.height =
     (p.cdS3 / p.s3Max) * 100 + "%";
 
-  let ix = 0,
-    iy = 0;
+  let ix = 0;
+  let iy = 0;
+
   if (keys["KeyW"] || keys["ArrowUp"]) iy = -1;
   if (keys["KeyS"] || keys["ArrowDown"]) iy = 1;
   if (keys["KeyA"] || keys["ArrowLeft"]) ix = -1;
   if (keys["KeyD"] || keys["ArrowRight"]) ix = 1;
+
   if (joy.active) {
     ix = joy.x;
     iy = joy.y;
@@ -824,7 +908,9 @@ function updateGame(dt) {
     iy /= len;
     p.dirX = ix;
     p.dirY = iy;
+
     if (Math.abs(ix) > Math.abs(iy)) p.lastDirX = Math.sign(ix);
+
     p.walkTimer += dt * 12;
     if (p.walkTimer > 1) {
       p.walkTimer = 0;
@@ -837,9 +923,10 @@ function updateGame(dt) {
   let currSpeed = p.isDashing ? p.speed * 3.5 : p.speed;
   moveObj(p, ix * currSpeed * dt, iy * currSpeed * dt);
 
-  let ptX = Math.floor(p.x / TILE),
-    ptY = Math.floor(p.y / TILE);
+  let ptX = Math.floor(p.x / TILE);
+  let ptY = Math.floor(p.y / TILE);
 
+  // CEK PORTAL DAN ALUR CERITA BARU
   if (map[ptY] && map[ptY][ptX] === 2) {
     p.area++;
     if (p.area > 4) {
@@ -901,12 +988,13 @@ function updateGame(dt) {
     pr.x += pr.vx * dt;
     pr.y += pr.vy * dt;
     pr.life -= dt;
+
     spawnParticles(pr.x, pr.y, "#9966ff", 2);
 
     for (let e of ents) {
       if (e.type === "ENEMY" && !e.dead) {
-        let dx = e.x - pr.x,
-          dy = e.y - pr.y;
+        let dx = e.x - pr.x;
+        let dy = e.y - pr.y;
         if (Math.sqrt(dx * dx + dy * dy) < pr.rad + e.rad) {
           hitEnemy(e, 80);
           pr.life = 0;
@@ -920,8 +1008,8 @@ function updateGame(dt) {
   for (let e of ents) {
     if (e.type === "ENEMY" && !e.dead) {
       if (e.hitT > 0) e.hitT -= dt;
-      let dx = p.x - e.x,
-        dy = p.y - e.y;
+      let dx = p.x - e.x;
+      let dy = p.y - e.y;
       let dist = Math.sqrt(dx * dx + dy * dy);
       let aggro = e.isBoss ? 500 : 350;
 
@@ -931,8 +1019,10 @@ function updateGame(dt) {
         let edmg = e.isBoss ? 30 : 15;
         p.hp -= edmg;
         e.hitT = 1.0;
+
         spawnText(p.x, p.y, `-${edmg} HP`, "#ff4444");
         spawnParticles(p.x, p.y, "#ff0000", 10);
+
         if (p.hp <= 0) gameOver();
       }
     }
@@ -944,6 +1034,7 @@ function updateGame(dt) {
     pt.life -= dt * 2;
   });
   particles = particles.filter((pt) => pt.life > 0);
+
   floatTexts.forEach((ft) => {
     ft.y -= 30 * dt;
     ft.life -= dt;
@@ -952,6 +1043,7 @@ function updateGame(dt) {
 
   cam.x += (p.x - WW / 2 - cam.x) * 5 * dt;
   cam.y += (p.y - WH / 2 - cam.y) * 5 * dt;
+
   updateHUD();
 }
 
@@ -974,6 +1066,7 @@ function drawGame() {
   for (let y = startR; y < endR; y++) {
     for (let x = startC; x < endC; x++) {
       let t = map[y][x];
+
       if (t === 1) {
         ctx.fillStyle = th.wall;
         ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
@@ -1008,6 +1101,7 @@ function drawGame() {
           y: y * TILE + TILE / 2,
         });
       }
+
       ctx.strokeStyle = "rgba(255,255,255,0.015)";
       ctx.strokeRect(x * TILE, y * TILE, TILE, TILE);
     }
@@ -1024,51 +1118,64 @@ function drawGame() {
       ctx.beginPath();
       ctx.ellipse(0, 14, 12, 4, 0, 0, Math.PI * 2);
       ctx.fill();
+
       let walkOffset = p.walkFrame === 0 ? 0 : 4;
       if (p.lastDirX < 0) ctx.scale(-1, 1);
 
       // DESAIN SAMURAI ZORO - INDO HEADBAND
+
+      // Kaki
       ctx.fillStyle = "#222";
       ctx.fillRect(-6, 6, 5, 8 - walkOffset);
       ctx.fillRect(1, 6, 5, 4 + walkOffset);
 
+      // Sandal
       ctx.fillStyle = "#da8";
       ctx.fillRect(-6, 14 - walkOffset, 5, 2);
       ctx.fillRect(1, 10 + walkOffset, 5, 2);
 
+      // Baju Kimono (Hijau Zoro)
       ctx.fillStyle = "#1e591e";
       ctx.fillRect(-7, -4, 14, 12);
 
+      // Sabuk
       ctx.fillStyle = "#8B0000";
       ctx.fillRect(-7, 4, 14, 3);
 
+      // Rambut Belakang
       ctx.fillStyle = "#111";
       ctx.fillRect(-6, -10, 12, 18);
 
+      // Wajah
       ctx.fillStyle = "#ffccaa";
       ctx.beginPath();
       ctx.arc(0, -9, 7, 0, Math.PI * 2);
       ctx.fill();
 
+      // Rambut Atas
       ctx.fillStyle = "#111";
       ctx.beginPath();
       ctx.arc(0, -12, 7, Math.PI, 0);
       ctx.fill();
 
+      // Ikat Kepala Bendera Indonesia
       ctx.fillStyle = "#f00";
       ctx.fillRect(-7, -15, 14, 2);
       ctx.fillStyle = "#fff";
       ctx.fillRect(-7, -13, 14, 2);
 
+      // Mata
       ctx.fillStyle = "#000";
       ctx.fillRect(-4, -10, 2, 2);
       ctx.fillRect(2, -10, 2, 2);
 
+      // Katana Mulut
       ctx.fillStyle = "#ddd";
       ctx.fillRect(4, -9, 10, 2);
       ctx.fillStyle = "#111";
       ctx.fillRect(-4, -9, 8, 2);
 
+      // Katana Tangan
       ctx.save();
       if (p.cdAtk > p.atkMax - 0.1) {
         ctx.translate(10, -5);
@@ -1082,8 +1189,10 @@ function drawGame() {
         let yOffset = i * 5;
         ctx.fillStyle = "#111";
         ctx.fillRect(-1.5, 0 + yOffset, 3, 10);
+
         ctx.fillStyle = "#da3";
         ctx.fillRect(-3, -2 + yOffset, 6, 2);
+
         ctx.fillStyle = "#ddd";
         ctx.beginPath();
         ctx.moveTo(-1.5, -2 + yOffset);
@@ -1104,8 +1213,10 @@ function drawGame() {
     } else if (obj.type === "CHEST") {
       ctx.fillStyle = obj.open ? "#444" : "#aa7722";
       ctx.fillRect(obj.x - 20, obj.y - 15, 40, 30);
+
       ctx.fillStyle = "#222";
       ctx.fillRect(obj.x - 20, obj.y - 5, 40, 4);
+
       if (!obj.open) {
         ctx.fillStyle = "#ffd700";
         ctx.fillRect(obj.x - 6, obj.y - 8, 12, 10);
@@ -1113,6 +1224,7 @@ function drawGame() {
     } else if (obj.type === "DECO") {
       ctx.save();
       ctx.translate(obj.x, obj.y);
+
       if (p.area === 1) {
         ctx.fillStyle = "#4a2e00";
         ctx.fillRect(-4, 0, 8, 16);
@@ -1284,6 +1396,7 @@ function drawGame() {
     }
   }
 
+  // --- KOMPAS PENUNJUK PETI / BOS ---
   let targetEnt = null;
   let minDist = Infinity;
   let isBossTarget = false;
@@ -1311,6 +1424,7 @@ function drawGame() {
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(angle);
+
     let pulse = Math.sin(performance.now() * 0.005) * 5;
     ctx.translate(45 + pulse, 0);
 
@@ -1346,20 +1460,23 @@ function drawGame() {
     ctx.fillStyle = pt.color;
     ctx.fillRect(pt.x, pt.y, 4, 4);
   });
+
   ctx.globalAlpha = 1;
   ctx.font = "10px 'Press Start 2P', monospace";
   ctx.textAlign = "center";
+
   floatTexts.forEach((ft) => {
     ctx.fillStyle = ft.color;
     ctx.globalAlpha = Math.min(1, ft.life);
     ctx.fillText(ft.text, ft.x, ft.y);
   });
+
   ctx.globalAlpha = 1;
   ctx.restore();
 }
 
 function spawnParticles(x, y, col, count) {
-  for (let i = 0; i < count; i++)
+  for (let i = 0; i < count; i++) {
     particles.push({
       x: x,
       y: y,
@@ -1368,7 +1485,9 @@ function spawnParticles(x, y, col, count) {
       life: 1,
       color: col,
     });
+  }
 }
+
 function spawnText(x, y, txt, col) {
   floatTexts.push({ x: x, y: y, text: txt, color: col, life: 1.5 });
 }
@@ -1378,9 +1497,11 @@ function updateHUD() {
   document.getElementById("t-maxhp").innerText = p.maxHp;
   document.getElementById("b-hp").style.width =
     Math.max(0, (p.hp / p.maxHp) * 100) + "%";
+
   document.getElementById("t-xp").innerText = Math.floor(p.xp);
   document.getElementById("b-xp").style.width =
     Math.max(0, (p.xp / p.maxXp) * 100) + "%";
+
   document.getElementById("t-area").innerText = p.area + "/4";
 
   document.getElementById("t-peti").innerText =
@@ -1391,9 +1512,11 @@ function showMenu(id) {
   document
     .querySelectorAll(".menu-screen")
     .forEach((el) => el.classList.remove("active"));
+
   document.getElementById(id).classList.add("active");
   document.getElementById("hud").classList.remove("active");
   document.getElementById("vctrl").style.display = "none";
+
   state = "MENU";
 }
 
@@ -1402,6 +1525,7 @@ function gameOver() {
   document.getElementById("go-lvl").innerText = THEMES[p.area].name;
   document.getElementById("go-benar").innerText = skorBenar;
   document.getElementById("go-salah").innerText = skorSalah;
+
   showMenu("m-go");
 }
 
