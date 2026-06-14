@@ -828,10 +828,15 @@ function hitEnemy(e, dmg) {
       let ptX = Math.floor(e.x / TILE);
       let ptY = Math.floor(e.y / TILE);
       map[ptY][ptX] = 2; // Portal terbuka
-      showNotif(
-        "BOS DIKALAHKAN! PORTAL KE AREA SELANJUTNYA TELAH TERBUKA DI TEMPAT BOS MATI!",
-      );
-    }
+      // PENGECEKAN AREA DITAMBAHKAN DI SINI:
+  if (p.area === 4) {
+    // Jika di Area 4 (Hexator)
+    showNotif("HEXATOR DIKALAHKAN! PORTAL KEMBALI KE KERAJAAN TELAH TERBUKA!");
+  } else {
+    // Jika di Area 1, 2, atau 3
+    showNotif("BOS DIKALAHKAN! PORTAL KE AREA SELANJUTNYA TELAH TERBUKA DI TEMPAT BOS MATI!");
+  }
+   }
   }
 }
 
@@ -942,13 +947,50 @@ function updateGame(dt) {
   // CEK PORTAL DAN ALUR CERITA BARU
   if (map[ptY] && map[ptY][ptX] === 2) {
     p.area++;
-    if (p.area > 4) {
+
+  // === KODE BARU UNTUK ENDING ===
+  if (p.area > 4) {
+    p.area = 4; // Tahan di area 4 agar tidak error saat render map
+    map[ptY][ptX] = 0; // Hapus portal agar tidak tertrigger berkali-kali
+
+    // Hentikan pergerakan pemain secara paksa
+    p.dirX = 0;
+    p.dirY = 0;
+    keys["KeyW"] = keys["KeyS"] = keys["KeyA"] = keys["KeyD"] = false;
+    keys["ArrowUp"] = keys["ArrowDown"] = keys["ArrowLeft"] = keys["ArrowRight"] = false;
+    if (typeof joy !== 'undefined') joy.active = false;
+
+    // Siapkan dialog penutup cerita
+    let epilogueDialog = [
+      {
+        speaker: "RAJA RADIX",
+        text: "Luar biasa, Pahlawan " + p.name + "! Kau berhasil mengalahkan Hexator dan membebaskan ke-4 dimensi bilangan!"
+      },
+      {
+        speaker: p.name,
+        text: "Sesuai janjiku, keseimbangan sistem bilangan kini telah kembali utuh, Yang Mulia."
+      },
+      {
+        speaker: "RAJA RADIX",
+        text: "Kerajaan Radix berhutang budi padamu. Namamu akan terukir abadi sebagai Legenda Jelajah Bilangan!"
+      }
+    ];
+
+    // Jalankan dialog, lalu munculkan layar kemenangan saat dialog selesai
+    startDialog(epilogueDialog, () => {
       document.getElementById("win-benar").innerText = skorBenar;
       document.getElementById("win-salah").innerText = skorSalah;
+
+      // Sembunyikan HUD dan Kontrol Virtual saat layar menang muncul
+      document.getElementById("hud").classList.remove("active");
+      document.getElementById("vctrl").style.display = "none";
+
       state = "WIN";
       document.getElementById("m-win").classList.add("active");
-      return;
-    }
+    });
+
+    return; 
+  }
 
     generateMap(p.area);
     p.x = TILE * 2.5;
@@ -1541,5 +1583,24 @@ function gameOver() {
 
   showMenu("m-go");
 }
+function tampilkanMateri() {
+  // Menyembunyikan semua layar menu yang sedang aktif
+  document.querySelectorAll(".menu-screen").forEach((el) => el.classList.remove("active"));
 
+  // Menampilkan layar materi yang baru kita buat di HTML
+  document.getElementById("m-materi").classList.add("active");
+
+  // Mengubah status game agar sistem tahu kita sedang berada di menu materi
+  state = "MATERI";
+}
+function tampilkanProfil() {
+  // Menyembunyikan semua layar menu aktif
+  document.querySelectorAll(".menu-screen").forEach((el) => el.classList.remove("active"));
+
+  // Menampilkan layar profil developer yang baru kita buat
+  document.getElementById("m-profil").classList.add("active");
+
+  // Mengubah status sistem game
+  state = "PROFIL";
+}
 requestAnimationFrame(loop);
