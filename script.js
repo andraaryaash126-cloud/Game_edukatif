@@ -3,7 +3,50 @@ const ctx = canvas.getContext("2d");
 const TILE = 64;
 let WW = window.innerWidth,
   WH = window.innerHeight;
+// ==========================================
+// --- SISTEM AUDIO MISI RADIX ---
+// ==========================================
+const sfx = {
+  bgmMenu: new Audio("bgm-menu.mp3"),
+  bgmPlay: new Audio("bgm-play.mp3"),
+  bgmWin: new Audio("bgm-win.mp3"),
+  bgmLose: new Audio("bgm-lose.mp3"),
+  atk: new Audio("sfx-atk.mp3"),
+  skill1: new Audio("sfx-skill1.mp3"),
+  skill2: new Audio("sfx-skill2.mp3"),
+  skill3: new Audio("sfx-skill3.mp3"),
+  bossDead: new Audio("sfx-bossdead.mp3"),
+  playerDead: new Audio("sfx-playerdead.mp3")
+};
 
+// Mengulang BGM agar tidak berhenti
+sfx.bgmMenu.loop = true;
+sfx.bgmPlay.loop = true;
+
+let currentBGM = null;
+
+// Fungsi untuk mengganti Musik Latar (BGM)
+function playBGM(bgmName) {
+  if (currentBGM) {
+    currentBGM.pause();
+    currentBGM.currentTime = 0;
+  }
+  if (bgmName && sfx[bgmName]) {
+    currentBGM = sfx[bgmName];
+    currentBGM.volume = 0.5; // Volume musik latar 50%
+    currentBGM.play().catch(e => console.log("Menunggu interaksi pemain untuk memutar musik..."));
+  }
+}
+
+// Fungsi untuk memutar Efek Suara (SFX) berlapis
+function playSFX(sfxName) {
+  if (sfx[sfxName]) {
+    let sound = sfx[sfxName].cloneNode(); // Di-clone agar bisa ditekan spam tanpa putus
+    sound.volume = 0.8; // Volume efek suara 80%
+    sound.play().catch(e => {});
+  }
+}
+// ==========================================
 window.addEventListener("resize", () => {
   WW = window.innerWidth;
   WH = window.innerHeight;
@@ -312,7 +355,7 @@ function resetStats() {
 
 function initGame() {
   bukaLayarPenuh();
-
+playBGM("bgmPlay");
   let inputName = document
     .getElementById("player-name-input")
     .value.trim()
@@ -355,7 +398,7 @@ function initGame() {
 // Checkpoint saat Gugur (Mulai dari Area terakhir)
 function startGame() {
   bukaLayarPenuh();
-
+playBGM("bgmPlay");
   document
     .querySelectorAll(".menu-screen")
     .forEach((el) => el.classList.remove("active"));
@@ -734,6 +777,7 @@ function tutupPenjelasan() {
 
 function doAttack() {
   if (p.cdAtk > 0) return;
+  playSFX("atk");
   p.cdAtk = p.atkMax;
   cekPeti();
 
@@ -755,6 +799,7 @@ function doAttack() {
 
 function doSkill1() {
   if (p.cdS1 > 0) return;
+  playSFX("skill1");
   p.cdS1 = p.s1Max;
   p.isDashing = true;
 
@@ -774,6 +819,7 @@ function doSkill1() {
 
 function doSkill2() {
   if (p.cdS2 > 0) return;
+  playSFX("skill2");
   p.cdS2 = p.s2Max;
   p.hp = Math.min(p.maxHp, p.hp + 60);
 
@@ -784,6 +830,7 @@ function doSkill2() {
 
 function doSkill3() {
   if (p.cdS3 > 0) return;
+  playSFX("skill3");
   p.cdS3 = p.s3Max;
 
   let vx = p.dirX * 400;
@@ -825,6 +872,7 @@ function hitEnemy(e, dmg) {
     spawnText(e.x, e.y, "+XP", "#40e080");
 
     if (e.isBoss) {
+      playSFX("bossDead");
       let ptX = Math.floor(e.x / TILE);
       let ptY = Math.floor(e.y / TILE);
       map[ptY][ptX] = 2; // Portal terbuka
@@ -950,6 +998,7 @@ function updateGame(dt) {
 
   // === KODE BARU UNTUK ENDING ===
   if (p.area > 4) {
+    playBGM("bgmWin");
     p.area = 4; // Tahan di area 4 agar tidak error saat render map
     map[ptY][ptX] = 0; // Hapus portal agar tidak tertrigger berkali-kali
 
@@ -1565,6 +1614,7 @@ function updateHUD() {
 
 function showMenu(id) {
   bukaLayarPenuh();
+  if (id === "m-main") playBGM("bgmMenu");
   document
     .querySelectorAll(".menu-screen")
     .forEach((el) => el.classList.remove("active"));
@@ -1578,6 +1628,8 @@ function showMenu(id) {
 
 function gameOver() {
   state = "GO";
+  playBGM("bgmLose");
+  playSFX("playerDead");
   document.getElementById("go-lvl").innerText = THEMES[p.area].name;
   document.getElementById("go-benar").innerText = skorBenar;
   document.getElementById("go-salah").innerText = skorSalah;
