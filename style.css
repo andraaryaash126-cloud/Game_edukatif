@@ -77,6 +77,8 @@ body::after {
   font-size: 10px;
   line-height: 1.8;
   box-shadow: 0 0 15px rgba(74, 158, 255, 0.3);
+
+  touch-action: pan-y !important;
 }
 .bar-bg {
   width: 120px;
