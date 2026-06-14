@@ -64,7 +64,7 @@ body::after {
   display: none;
   justify-content: space-between;
   z-index: 60;
-  pointer-events: none;
+  
 }
 #hud.active {
   display: flex;
@@ -77,6 +77,7 @@ body::after {
   font-size: 10px;
   line-height: 1.8;
   box-shadow: 0 0 15px rgba(74, 158, 255, 0.3);
+  pointer-events: auto;
 }
 .bar-bg {
   width: 120px;
