@@ -1564,6 +1564,7 @@ function updateHUD() {
 }
 
 function showMenu(id) {
+  bukaLayarPenuh();
   document
     .querySelectorAll(".menu-screen")
     .forEach((el) => el.classList.remove("active"));
@@ -1584,6 +1585,7 @@ function gameOver() {
   showMenu("m-go");
 }
 function tampilkanMateri() {
+  bukaLayarPenuh();
   // Menyembunyikan semua layar menu yang sedang aktif
   document.querySelectorAll(".menu-screen").forEach((el) => el.classList.remove("active"));
 
@@ -1594,6 +1596,7 @@ function tampilkanMateri() {
   state = "MATERI";
 }
 function tampilkanProfil() {
+  bukaLayarPenuh();
   // Menyembunyikan semua layar menu aktif
   document.querySelectorAll(".menu-screen").forEach((el) => el.classList.remove("active"));
 
