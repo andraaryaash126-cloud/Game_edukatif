@@ -76,8 +76,8 @@
         maxlength="12"
         autocomplete="off"
       />
-      <button class="ui-btn" onclick="tampilkanMateri()" style="background: #1a3a5f; margin-bottom: 10px;">Materi Belajar</button>
-      <button class="ui-btn" onclick="tampilkanProfil()" style="background: #1a3a5f; margin-bottom: 10px;">Profil Developer</button>
+      <button class="ui-btn" onclick="bukaLayarPenuh(); tampilkanMateri()" style="background: #1a3a5f; margin-bottom: 10px;">Materi Belajar</button>
+      <button class="ui-btn" onclick="bukaLayarPenuh(); tampilkanProfil()" style="background: #1a3a5f; margin-bottom: 10px;">Profil Developer</button>
       <button class="ui-btn" onclick="initGame()">Mulai Permainan</button>
     </div>
 
@@ -220,7 +220,7 @@
       Digit 3 = 0011 | Digit A (10) = 1010<br>
       Hasil gabungan: <b style="color: var(--c-gold);">00111010</b>
     </div>
-    <button class="ui-btn" onclick="showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Tutup Gulungan Ilmu</button>
+    <button class="ui-btn" onclick="bukaLayarPenuh(); showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Tutup Gulungan Ilmu</button>
  </div>
 
 </div>
@@ -242,7 +242,7 @@
         <li><b>Roni Eka Saputra</b> <span style="color: var(--c-blue); font-family: monospace;">(2524099)</span></li>
       </ol>
     </div>
-  </div> <button class="ui-btn" onclick="showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Kembali ke Menu</button>
+  </div> <button class="ui-btn" onclick="bukaLayarPenuh(); showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Kembali ke Menu</button>
 </div> 
   
     <div class="menu-screen" id="m-go">
@@ -307,6 +307,6 @@
 
     <div id="notif-area" class="notif"></div>
 
-<script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>
