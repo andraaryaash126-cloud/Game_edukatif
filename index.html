@@ -81,10 +81,10 @@
       <button class="ui-btn" onclick="initGame()">Mulai Permainan</button>
     </div>
 
-<div class="menu-screen" id="m-materi" style="padding: 20px; box-sizing: border-box;">
-  <div class="title" style="font-size: 20px; margin-bottom: 15px;">PANDUAN ILMU RADIX</div>
+<div class="menu-screen" id="m-materi" style="padding: 20px; box-sizing: border-box; overflow-y: auto !important; justify-content: flex-start !important; touch-action: pan-y !important;">
+  <div class="title" style="font-size: 20px; margin-top: 10px; margin-bottom: 15px; flex-shrink: 0;">PANDUAN ILMU RADIX</div>
   
-  <div class="hud-box" style="width: 95%; max-width: 750px; text-align: left; max-height: 70vh; overflow-y: auto; font-family: sans-serif; font-size: 11px; line-height: 1.6; pointer-events: auto; padding: 25px; box-sizing: border-box;">
+  <div class="hud-box" style="width: 95%; max-width: 750px; text-align: left; font-family: sans-serif; font-size: 11px; line-height: 1.6; pointer-events: auto; padding: 25px; box-sizing: border-box; margin-bottom: 15px; touch-action: pan-y !important;">
     
     <p style="text-align: center; color: #aaa; margin-bottom: 25px; font-style: italic;">Pelajari konsep dasar konversi 4 dimensi untuk menaklukkan para Penjaga Area!</p>
 
@@ -116,12 +116,11 @@
       (1&times;2⁴) + (0&times;2³) + (1&times;2²) + (0&times;2¹) + (1&times;2⁰) = 16 + 0 + 4 + 0 + 1 = <b style="color: var(--c-gold);">21</b>
     </div>
 
-
     <h3 style="color: var(--c-gold); margin-top: 30px; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 13px;">AREA 2: OCTAL ICE CAVE (Basis 8)</h3>
     <p>Menggunakan delapan simbol angka: <b>0 sampai 7</b>. Karena basis 8 adalah 2 pangkat 3 (2³ = 8), sistem ini sering digunakan untuk menyingkat penulisan deretan biner.</p>
     
     <p style="color: var(--c-blue); margin-top: 10px; font-weight: bold;">A. Desimal &rarr; Oktal (Metode Sisa Bagi 8)</p>
-    <p>Konsepnya identik dengan konversi biner, namun angka pembaginya adalah 8. Bagilah nilai desimal dengan 8 dan catat sisa baginya. Ulangi proses pada hasil bagi hingga nilainya habis menjadi 0. Susun sisa bagi dari bawah ke atas.</p>
+    <p>Konsepnya identik dengan konversi biner, namun angka pembaginya adalah 8. Bagilah nilai desimal dengan 8 and catat sisa baginya. Ulangi proses pada hasil bagi hingga nilainya habis menjadi 0. Susun sisa bagi dari bawah ke atas.</p>
     <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
       <b>Contoh 1: Angka 85</b><br>
       85 &divide; 8 = 10 sisa <b>5</b> | 10 &divide; 8 = 1 sisa <b>2</b> | 1 &divide; 8 = 0 sisa <b>1</b><br>
@@ -220,21 +219,23 @@
       Digit 3 = 0011 | Digit A (10) = 1010<br>
       Hasil gabungan: <b style="color: var(--c-gold);">00111010</b>
     </div>
-    <button class="ui-btn" onclick="bukaLayarPenuh(); showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Tutup Gulungan Ilmu</button>
- </div>
+  </div>
+  
+  <button class="ui-btn" onclick="bukaLayarPenuh(); showMenu('m-main')" style="margin-bottom: 20px; background: #1a3a5f; width: 95%; max-width: 750px; flex-shrink: 0;">Tutup Gulungan Ilmu</button>
+</div>
 
 </div>
-  <div class="menu-screen" id="m-profil" style="padding: 20px; box-sizing: border-box;">
-  <div class="title" style="font-size: 20px; margin-bottom: 15px;">TIM DEVELOPER</div>
+  <div class="menu-screen" id="m-profil" style="padding: 20px; box-sizing: border-box; overflow-y: auto !important; justify-content: flex-start !important; touch-action: pan-y !important;">
+  <div class="title" style="font-size: 20px; margin-top: 10px; margin-bottom: 15px; flex-shrink: 0;">TIM DEVELOPER</div>
   
-  <div class="hud-box" style="width: 90%; max-width: 500px; text-align: center; pointer-events: auto; padding: 25px; box-sizing: border-box;">
+  <div class="hud-box" style="width: 95%; max-width: 500px; text-align: center; pointer-events: auto; padding: 25px; box-sizing: border-box; margin-bottom: 15px; touch-action: pan-y !important;">
     
-    <div style="width: 100%; max-width: 350px; height: 200px; border: 2px dashed var(--c-blue); margin: 0 auto 20px auto; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; border-radius: 8px; overflow: hidden;">
+    <div style="width: 100%; max-width: 320px; height: 180px; border: 2px dashed var(--c-blue); margin: 0 auto 20px auto; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
       <img src="Tim.jpeg" alt="Foto Kelompok" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width: 100%; height: 100%; object-fit: cover;">
       <span style="display: none; color: #888; font-family: sans-serif; font-size: 12px;">[ Tempatkan Foto Kelompok di Sini ]</span>
     </div>
 
-    <div style="text-align: left; font-family: sans-serif; font-size: 13px; line-height: 1.8; color: #ddd; max-width: 350px; margin: 0 auto;">
+    <div style="text-align: left; font-family: sans-serif; font-size: 13px; line-height: 1.8; color: #ddd; max-width: 320px; margin: 0 auto 20px auto;">
       <h4 style="color: var(--c-gold); font-family: var(--font-px); font-size: 10px; margin-bottom: 10px; text-align: center;">ANGGOTA KELOMPOK</h4>
       <ol style="padding-left: 15px;">
         <li><b>Angel Baby Camelia</b> <span style="color: var(--c-blue); font-family: monospace;">(2524086)</span></li>
@@ -242,8 +243,10 @@
         <li><b>Roni Eka Saputra</b> <span style="color: var(--c-blue); font-family: monospace;">(2524099)</span></li>
       </ol>
     </div>
-  </div> <button class="ui-btn" onclick="bukaLayarPenuh(); showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Kembali ke Menu</button>
-</div> 
+  </div>
+  
+  <button class="ui-btn" onclick="bukaLayarPenuh(); showMenu('m-main')" style="margin-bottom: 20px; background: #1a3a5f; width: 95%; max-width: 500px; flex-shrink: 0;">Kembali ke Menu</button>
+</div>
   
     <div class="menu-screen" id="m-go">
       <div class="title" style="color: var(--c-red); text-shadow: 0 0 20px red">
