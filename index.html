@@ -76,9 +76,175 @@
         maxlength="12"
         autocomplete="off"
       />
+      <button class="ui-btn" onclick="tampilkanMateri()" style="background: #1a3a5f; margin-bottom: 10px;">Materi Belajar</button>
+      <button class="ui-btn" onclick="tampilkanProfil()" style="background: #1a3a5f; margin-bottom: 10px;">Profil Developer</button>
       <button class="ui-btn" onclick="initGame()">Mulai Permainan</button>
     </div>
 
+<div class="menu-screen" id="m-materi" style="padding: 20px; box-sizing: border-box;">
+  <div class="title" style="font-size: 20px; margin-bottom: 15px;">PANDUAN ILMU RADIX</div>
+  
+  <div class="hud-box" style="width: 95%; max-width: 750px; text-align: left; max-height: 70vh; overflow-y: auto; font-family: sans-serif; font-size: 11px; line-height: 1.6; pointer-events: auto; padding: 25px; box-sizing: border-box;">
+    
+    <p style="text-align: center; color: #aaa; margin-bottom: 25px; font-style: italic;">Pelajari konsep dasar konversi 4 dimensi untuk menaklukkan para Penjaga Area!</p>
+
+    <h3 style="color: var(--c-gold); margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 13px;">AREA 1: BINARY FOREST (Basis 2)</h3>
+    <p>Sistem ini hanya menggunakan dua simbol, yaitu <b>0</b> (mati/off) dan <b>1</b> (hidup/on). Ini adalah bahasa fundamental yang dipahami oleh mesin komputer.</p>
+    
+    <p style="color: var(--c-blue); margin-top: 10px; font-weight: bold;">A. Desimal &rarr; Biner (Metode Sisa Bagi 2)</p>
+    <p>Bagilah angka desimal dengan 2. Jika hasilnya ganjil, maka sisa baginya adalah 1. Jika genap, sisanya adalah 0. Lanjutkan membagi hasil sebelumnya dengan 2 hingga mencapai angka 0. Nilai biner didapatkan dengan merangkai seluruh sisa pembagian dari langkah paling akhir (bawah) ke langkah pertama (atas).</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Angka 13</b><br>
+      13 &divide; 2 = 6 sisa <b>1</b> | 6 &divide; 2 = 3 sisa <b>0</b> | 3 &divide; 2 = 1 sisa <b>1</b> | 1 &divide; 2 = 0 sisa <b>1</b><br>
+      Hasil: <b style="color: var(--c-gold);">1101</b><br><br>
+      <b>Contoh 2: Angka 20</b><br>
+      20 &divide; 2 = 10 (0) | 10 &divide; 2 = 5 (0) | 5 &divide; 2 = 2 (1) | 2 &divide; 2 = 1 (0) | 1 &divide; 2 = 0 (1)<br>
+      Hasil: <b style="color: var(--c-gold);">10100</b><br><br>
+      <b>Contoh 3: Angka 35</b><br>
+      35 &divide; 2 = 17 (1) | 17 &divide; 2 = 8 (1) | 8 &divide; 2 = 4 (0) | 4 &divide; 2 = 2 (0) | 2 &divide; 2 = 1 (0) | 1 &divide; 2 = 0 (1)<br>
+      Hasil: <b style="color: var(--c-gold);">100011</b>
+    </div>
+
+    <p style="color: var(--c-blue); margin-top: 15px; font-weight: bold;">B. Biner &rarr; Desimal (Metode Penjumlahan Pangkat)</p>
+    <p>Setiap posisi digit dalam bilangan biner memiliki bobot nilai yang merupakan kelipatan pangkat 2, dimulai dari pangkat 0 di posisi paling kanan. Kalikan setiap digit (1 atau 0) dengan bobot pangkat posisinya, lalu jumlahkan seluruh hasilnya.</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Biner 1011</b><br>
+      (1&times;2³) + (0&times;2²) + (1&times;2¹) + (1&times;2⁰) = 8 + 0 + 2 + 1 = <b style="color: var(--c-gold);">11</b><br><br>
+      <b>Contoh 2: Biner 1110</b><br>
+      (1&times;2³) + (1&times;2²) + (1&times;2¹) + (0&times;2⁰) = 8 + 4 + 2 + 0 = <b style="color: var(--c-gold);">14</b><br><br>
+      <b>Contoh 3: Biner 10101</b><br>
+      (1&times;2⁴) + (0&times;2³) + (1&times;2²) + (0&times;2¹) + (1&times;2⁰) = 16 + 0 + 4 + 0 + 1 = <b style="color: var(--c-gold);">21</b>
+    </div>
+
+
+    <h3 style="color: var(--c-gold); margin-top: 30px; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 13px;">AREA 2: OCTAL ICE CAVE (Basis 8)</h3>
+    <p>Menggunakan delapan simbol angka: <b>0 sampai 7</b>. Karena basis 8 adalah 2 pangkat 3 (2³ = 8), sistem ini sering digunakan untuk menyingkat penulisan deretan biner.</p>
+    
+    <p style="color: var(--c-blue); margin-top: 10px; font-weight: bold;">A. Desimal &rarr; Oktal (Metode Sisa Bagi 8)</p>
+    <p>Konsepnya identik dengan konversi biner, namun angka pembaginya adalah 8. Bagilah nilai desimal dengan 8 dan catat sisa baginya. Ulangi proses pada hasil bagi hingga nilainya habis menjadi 0. Susun sisa bagi dari bawah ke atas.</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Angka 85</b><br>
+      85 &divide; 8 = 10 sisa <b>5</b> | 10 &divide; 8 = 1 sisa <b>2</b> | 1 &divide; 8 = 0 sisa <b>1</b><br>
+      Hasil: <b style="color: var(--c-gold);">125</b><br><br>
+      <b>Contoh 2: Angka 120</b><br>
+      120 &divide; 8 = 15 sisa <b>0</b> | 15 &divide; 8 = 1 sisa <b>7</b> | 1 &divide; 8 = 0 sisa <b>1</b><br>
+      Hasil: <b style="color: var(--c-gold);">170</b><br><br>
+      <b>Contoh 3: Angka 256</b><br>
+      256 &divide; 8 = 32 sisa <b>0</b> | 32 &divide; 8 = 4 sisa <b>0</b> | 4 &divide; 8 = 0 sisa <b>4</b><br>
+      Hasil: <b style="color: var(--c-gold);">400</b>
+    </div>
+
+    <p style="color: var(--c-blue); margin-top: 15px; font-weight: bold;">B. Biner &rarr; Oktal (Metode Pengelompokan 3 Digit)</p>
+    <p>Karena 1 digit oktal dapat mewakili maksimal angka 7 (yaitu 111 dalam biner), maka pisahkan deretan biner menjadi kelompok-kelompok yang berisi tepat 3 digit. Pengelompokan wajib dimulai dari ujung paling kanan. Setelah dipisah, hitung nilai desimal dari masing-masing kelompok tersebut.</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Biner 111010</b><br>
+      Pecah menjadi dua bagian: [111] dan [010] &rarr; [111 = 7] , [010 = 2]<br>
+      Hasil: <b style="color: var(--c-gold);">72</b><br><br>
+      <b>Contoh 2: Biner 10011</b><br>
+      Tambahkan angka 0 di depan agar pas 3 digit: [010] dan [011] &rarr; [010 = 2] , [011 = 3]<br>
+      Hasil: <b style="color: var(--c-gold);">23</b><br><br>
+      <b>Contoh 3: Biner 1101101</b><br>
+      Pecah dari kanan: [001] , [101] , [101] &rarr; [001 = 1] , [101 = 5] , [101 = 5]<br>
+      Hasil: <b style="color: var(--c-gold);">155</b>
+    </div>
+
+    <h3 style="color: var(--c-gold); margin-top: 30px; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 13px;">AREA 3: DECIMAL DESERT (Basis 10)</h3>
+    <p>Sistem bilangan universal yang kita gunakan sehari-hari (0-9). Di area ini, kita akan fokus mengembalikan format bilangan basis lain ke wujud desimal.</p>
+    
+    <p style="color: var(--c-blue); margin-top: 10px; font-weight: bold;">A. Oktal &rarr; Desimal (Metode Penjumlahan Pangkat 8)</p>
+    <p>Sama seperti saat mengonversi biner ke desimal, namun kali ini kalikan setiap digit oktal dengan bilangan 8 yang dipangkatkan sesuai urutan posisinya (dimulai dari pangkat 0 pada digit terkanan).</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Oktal 37</b><br>
+      (3 &times; 8¹) + (7 &times; 8⁰) = 24 + 7 = <b style="color: var(--c-gold);">31</b><br><br>
+      <b>Contoh 2: Oktal 145</b><br>
+      (1 &times; 8²) + (4 &times; 8¹) + (5 &times; 8⁰) = 64 + 32 + 5 = <b style="color: var(--c-gold);">101</b><br><br>
+      <b>Contoh 3: Oktal 203</b><br>
+      (2 &times; 8²) + (0 &times; 8¹) + (3 &times; 8⁰) = 128 + 0 + 3 = <b style="color: var(--c-gold);">131</b>
+    </div>
+
+    <p style="color: var(--c-blue); margin-top: 15px; font-weight: bold;">B. Heksadesimal &rarr; Desimal (Metode Penjumlahan Pangkat 16)</p>
+    <p>Kalikan setiap digit heksa dengan kelipatan pangkat 16. Penting: Jika ada digit yang berupa huruf, terjemahkan huruf tersebut menjadi angka desimal aslinya terlebih dahulu (A=10, B=11, C=12, D=13, E=14, F=15) sebelum melakukan perkalian.</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Heksa 1A</b><br>
+      (1 &times; 16¹) + (10 &times; 16⁰) = 16 + 10 = <b style="color: var(--c-gold);">26</b><br><br>
+      <b>Contoh 2: Heksa 2F</b><br>
+      (2 &times; 16¹) + (15 &times; 16⁰) = 32 + 15 = <b style="color: var(--c-gold);">47</b><br><br>
+      <b>Contoh 3: Heksa B5</b><br>
+      (11 &times; 16¹) + (5 &times; 16⁰) = 176 + 5 = <b style="color: var(--c-gold);">181</b>
+    </div>
+
+    <h3 style="color: var(--c-gold); margin-top: 30px; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 13px;">AREA 4: HEXADECIMAL CRATER (Basis 16)</h3>
+    <p>Karena angka biasa hanya sampai 9, heksadesimal memanfaatkan kombinasi angka <b>0-9</b> ditambah dengan huruf <b>A-F</b>. Sistem ini krusial dalam pemrograman untuk merujuk pada memori dan kode warna.</p>
+    
+    <p style="color: var(--c-blue); margin-top: 10px; font-weight: bold;">A. Desimal &rarr; Heksadesimal (Metode Sisa Bagi 16)</p>
+    <p>Bagilah nilai desimal dengan 16 dan catat sisanya. Jika sisa pembagian berada di rentang 10 hingga 15, kamu wajib mengonversinya menjadi representasi abjad (10=A, 11=B, dst). Susun kembali hasil akhirnya dari posisi paling bawah ke atas.</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Angka 94</b><br>
+      94 &divide; 16 = 5 sisa 14 &rarr; Sisa 14 ditulis dengan huruf <b>E</b><br>
+      Hasil: <b style="color: var(--c-gold);">5E</b><br><br>
+      <b>Contoh 2: Angka 165</b><br>
+      165 &divide; 16 = 10 sisa 5 &rarr; Angka 10 (sebagai hasil bagi terakhir) ditulis <b>A</b><br>
+      Hasil: <b style="color: var(--c-gold);">A5</b><br><br>
+      <b>Contoh 3: Angka 300</b><br>
+      300 &divide; 16 = 18 sisa 12 (<b>C</b>) | 18 &divide; 16 = 1 sisa <b>2</b> | 1 &divide; 16 = 0 sisa <b>1</b><br>
+      Hasil: <b style="color: var(--c-gold);">12C</b>
+    </div>
+
+    <p style="color: var(--c-blue); margin-top: 15px; font-weight: bold;">B. Biner &rarr; Heksadesimal (Metode Pengelompokan 4 Digit)</p>
+    <p>Nilai maksimum 1 digit heksadesimal adalah 15 (F), yang setara dengan 1111 dalam wujud biner. Oleh karena itu, mulailah dari sisi kanan dan pecah deretan angka biner menjadi grup-grup yang tepat berisi 4 digit. Terjemahkan tiap grup menjadi angka desimal (dan jadikan huruf jika nilainya 10-15).</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Biner 11110</b><br>
+      Pecah kelompok 4 digit (tambah 0 di depan): [0001] dan [1110]<br>
+      [0001 = 1] , [1110 = 14 atau E]<br>
+      Hasil: <b style="color: var(--c-gold);">1E</b><br><br>
+      <b>Contoh 2: Biner 10101011</b><br>
+      Pecah kelompok 4 digit: [1010] dan [1011]<br>
+      [1010 = 10 atau A] , [1011 = 11 atau B]<br>
+      Hasil: <b style="color: var(--c-gold);">AB</b><br><br>
+      <b>Contoh 3: Biner 110011</b><br>
+      Pecah kelompok 4 digit: [0011] dan [0011]<br>
+      [0011 = 3] , [0011 = 3]<br>
+      Hasil: <b style="color: var(--c-gold);">33</b>
+    </div>
+
+    <p style="color: var(--c-blue); margin-top: 15px; font-weight: bold;">C. Heksadesimal &rarr; Biner (Metode Ekspansi 4 Digit)</p>
+    <p>Ini adalah proses kebalikan mutlak dari metode di atas. Jabarkan setiap 1 digit heksadesimal (baik angka maupun huruf) menjadi bentuk binernya. Sangat penting: Kamu harus memastikan bahwa hasil penjabaran tiap digit tersebut berjumlah tepat 4 digit biner. Jika kurang, tambahkan padding angka 0 di depannya.</p>
+    <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 5px; font-family: monospace; margin: 8px 0; color: #ddd; line-height: 1.4;">
+      <b>Contoh 1: Heksa 2D</b><br>
+      Digit 2 = 0010 (harus ditulis 4 digit, bukan sekadar 10) | Digit D (13) = 1101<br>
+      Hasil gabungan: <b style="color: var(--c-gold);">00101101</b> (atau cukup ditulis <b>101101</b>)<br><br>
+      <b>Contoh 2: Heksa F7</b><br>
+      Digit F (15) = 1111 | Digit 7 = 0111<br>
+      Hasil gabungan: <b style="color: var(--c-gold);">11110111</b><br><br>
+      <b>Contoh 3: Heksa 3A</b><br>
+      Digit 3 = 0011 | Digit A (10) = 1010<br>
+      Hasil gabungan: <b style="color: var(--c-gold);">00111010</b>
+    </div>
+    <button class="ui-btn" onclick="showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Tutup Gulungan Ilmu</button>
+ </div>
+
+</div>
+  <div class="menu-screen" id="m-profil" style="padding: 20px; box-sizing: border-box;">
+  <div class="title" style="font-size: 20px; margin-bottom: 15px;">TIM DEVELOPER</div>
+  
+  <div class="hud-box" style="width: 90%; max-width: 500px; text-align: center; pointer-events: auto; padding: 25px; box-sizing: border-box;">
+    
+    <div style="width: 100%; max-width: 350px; height: 200px; border: 2px dashed var(--c-blue); margin: 0 auto 20px auto; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; border-radius: 8px; overflow: hidden;">
+      <img src="Tim.jpeg" alt="Foto Kelompok" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width: 100%; height: 100%; object-fit: cover;">
+      <span style="display: none; color: #888; font-family: sans-serif; font-size: 12px;">[ Tempatkan Foto Kelompok di Sini ]</span>
+    </div>
+
+    <div style="text-align: left; font-family: sans-serif; font-size: 13px; line-height: 1.8; color: #ddd; max-width: 350px; margin: 0 auto;">
+      <h4 style="color: var(--c-gold); font-family: var(--font-px); font-size: 10px; margin-bottom: 10px; text-align: center;">ANGGOTA KELOMPOK</h4>
+      <ol style="padding-left: 15px;">
+        <li><b>Angel Baby Camelia</b> <span style="color: var(--c-blue); font-family: monospace;">(2524086)</span></li>
+        <li><b>Andra Arya Shena</b> <span style="color: var(--c-blue); font-family: monospace;">(2524094)</span></li>
+        <li><b>Roni Eka Saputra</b> <span style="color: var(--c-blue); font-family: monospace;">(2524099)</span></li>
+      </ol>
+    </div>
+  </div> <button class="ui-btn" onclick="showMenu('m-main')" style="margin-top: 15px; background: #1a3a5f;">Kembali ke Menu</button>
+</div> 
+  
     <div class="menu-screen" id="m-go">
       <div class="title" style="color: var(--c-red); text-shadow: 0 0 20px red">
         GUGUR
